@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using RPG_Bot.commands;
 using RPG_Bot.config;
 
 namespace RPG_Bot
@@ -18,11 +19,22 @@ namespace RPG_Bot
                 Intents = DiscordIntents.All,
                 Token = jsonReader.token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true,
+                AutoReconnect = true
             };
 
             Client = new DiscordClient(discordConfig);
             Client.Ready += Client_Ready;
+
+            var commandsConfig = new CommandsNextConfiguration()
+            {
+                StringPrefixes = new string[] { jsonReader.prefix },
+                EnableMentionPrefix = true,
+                EnableDms = true,
+                EnableDefaultHelp = false
+            };
+
+            Commands = Client.UseCommandsNext(commandsConfig);
+            Commands.RegisterCommands<TestCommands>();
 
             await Client.ConnectAsync();
             await Task.Delay(-1);
