@@ -1,6 +1,10 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.SlashCommands;
 using RPG_Bot.commands;
+using RPG_Bot.Commands.Slash;
 using RPG_Bot.config;
 
 namespace RPG_Bot
@@ -23,6 +27,12 @@ namespace RPG_Bot
             };
 
             Client = new DiscordClient(discordConfig);
+
+            Client.UseInteractivity(new InteractivityConfiguration()
+            {
+                Timeout = TimeSpan.FromMinutes(2)
+            });
+
             Client.Ready += Client_Ready;
 
             var commandsConfig = new CommandsNextConfiguration()
@@ -34,7 +44,10 @@ namespace RPG_Bot
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
-            Commands.RegisterCommands<TestCommands>();
+            var slashCommandsConfiguration = Client.UseSlashCommands();
+
+            //Commands.RegisterCommands<TestCommands>();
+            slashCommandsConfiguration.RegisterCommands<ProfileCommands>();
 
             await Client.ConnectAsync();
             await Task.Delay(-1);
