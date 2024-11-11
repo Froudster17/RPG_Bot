@@ -3,13 +3,13 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
-using RPG_Bot.commands;
-using RPG_Bot.Commands.Slash;
+using RPG_Bot.Commands.TestSlash;
 using RPG_Bot.config;
+using RPG_Bot.Data;
 
 namespace RPG_Bot
 {
-    internal class Program
+    public class Program
     {
         private static DiscordClient Client { get; set; }
         private static CommandsNextExtension Commands {  get; set; }
@@ -47,7 +47,7 @@ namespace RPG_Bot
             var slashCommandsConfiguration = Client.UseSlashCommands();
 
             //Commands.RegisterCommands<TestCommands>();
-            slashCommandsConfiguration.RegisterCommands<ProfileCommands>();
+            slashCommandsConfiguration.RegisterCommands<TestProfileCommands>();
 
             await Client.ConnectAsync();
             await Task.Delay(-1);
@@ -57,5 +57,6 @@ namespace RPG_Bot
         {
             return Task.CompletedTask;
         }
+
     }
 }
