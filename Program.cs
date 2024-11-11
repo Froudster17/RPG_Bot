@@ -5,7 +5,6 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using RPG_Bot.Commands.TestSlash;
 using RPG_Bot.config;
-using RPG_Bot.Data;
 
 namespace RPG_Bot
 {

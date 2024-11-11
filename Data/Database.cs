@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPG_Bot.Database
+namespace RPG_Bot.Data
 {
     public class Database
     {
         private readonly string _databasePath;
-        private readonly string _guildID;
         public Database(ulong guildID)
         {
             string guildDbFileName = $"{guildID}.db";
@@ -52,7 +51,7 @@ namespace RPG_Bot.Database
                 }
 
                 // Connect to the SQLite database at _databasePath (SQLite will create the file if it doesn't exist)
-                using var connection = new SqliteConnection($"Data Source={_databasePath};Version=3;");
+                using var connection = new SqliteConnection($"Data Source={_databasePath}");
                 connection.Open();
 
                 // Create the Users table if it doesn't exist
@@ -73,5 +72,6 @@ namespace RPG_Bot.Database
                 Console.WriteLine($"Error initializing database: {ex.Message}");
             }
         }
+
     }
 }

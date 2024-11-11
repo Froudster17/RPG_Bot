@@ -15,9 +15,9 @@ namespace RPG_Bot.Commands.TestSlash
         public async Task ProfileCommand(InteractionContext interactionContext)
         {
             await interactionContext.DeferAsync();
+            ulong guildId = interactionContext.Guild.Id;
 
-            var guildId = interactionContext.Guild.Id;
-            var database = new Database;
+            var database = new Database(guildId);
 
             await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Hello World"));
         }
