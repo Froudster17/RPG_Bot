@@ -41,8 +41,6 @@ namespace RPG_Bot.Commands.TestSlash
             embed.AddField("XP", profile.Xp.ToString(), true);
 
             await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-
-
         }
     }
 }
