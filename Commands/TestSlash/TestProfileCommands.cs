@@ -22,16 +22,26 @@ namespace RPG_Bot.Commands.TestSlash
             var database = new Database(guildId);
             var profilesTable = new ProfilesTable(database.DatabasePath);
 
-            if (!profilesTable.DoesProfileExist(discordUserID))
+            var profile = profilesTable.GetProfile(discordUserID);
+
+            if (profile == null)
             {
                 profilesTable.CreateProfile(discordUserID, username);
-            }
-            else
-            {
-                Console.WriteLine("Profile already exists for this user.");
+                profile = profilesTable.GetProfile(discordUserID);
             }
 
-            await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Hello World"));
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = $"{username}'s Profile",
+                Color = DiscordColor.Azure
+            };
+
+            embed.AddField("Username", profile.Username, true);
+            embed.AddField("Level", profile.Level.ToString(), true);
+            embed.AddField("XP", profile.Xp.ToString(), true);
+
+            await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+
 
         }
     }

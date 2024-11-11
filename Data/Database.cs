@@ -52,12 +52,10 @@ namespace RPG_Bot.Data
                 }
 
                 // Connect to the SQLite database at _databasePath (SQLite will create the file if it doesn't exist)
-                using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
-                {
-                    connection.Open();
-                    // The connection will automatically be closed when the 'using' block ends.
-                    Console.WriteLine($"Database file created (blank) for guild ID: {_databasePath}");
-                }
+                using var connection = new SqliteConnection($"Data Source={_databasePath}");
+                connection.Open();
+                // The connection will automatically be closed when the 'using' block ends.
+                Console.WriteLine($"Database file created (blank) for guild ID: {_databasePath}");
 
                 // Connection is closed here because of the 'using' block
             }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using RPG_Bot.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,11 @@ namespace RPG_Bot.Data
         {
             try
             {
-                using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
-                {
-                    connection.Open();
+                using var connection = new SqliteConnection($"Data Source={_databasePath}");
+                connection.Open();
 
-                    // SQL query to create the Profiles table if it doesn't already exist
-                    string createTableQuery = @"
+                // SQL query to create the Profiles table if it doesn't already exist
+                string createTableQuery = @"
                         CREATE TABLE IF NOT EXISTS Profiles (
                             DiscordUserId TEXT PRIMARY KEY,
                             Username TEXT,
@@ -36,13 +36,11 @@ namespace RPG_Bot.Data
                             MaxXp INTEGER DEFAULT 0
                         );";
 
-                    using (var command = new SqliteCommand(createTableQuery, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-
-                    Console.WriteLine("Profiles table ensured (created if necessary).");
+                using (var command = new SqliteCommand(createTableQuery, connection))
+                {
+                    command.ExecuteNonQuery();
                 }
+
             }
             catch (Exception ex)
             {
@@ -56,28 +54,26 @@ namespace RPG_Bot.Data
         {
             try
             {
-                using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
-                {
-                    connection.Open();
+                using var connection = new SqliteConnection($"Data Source={_databasePath}");
+                connection.Open();
 
-                    // SQL query to insert a new profile into the database
-                    string query = @"INSERT INTO Profiles (DiscordUserId, Username, Level, Xp, MaxXp) 
+                // SQL query to insert a new profile into the database
+                string query = @"INSERT INTO Profiles (DiscordUserId, Username, Level, Xp, MaxXp) 
                                      VALUES (@DiscordUserId, @Username, @Level, @Xp, @MaxXp)";
 
-                    using (var command = new SqliteCommand(query, connection))
-                    {
-                        command.Parameters.Add("@DiscordUserId", SqliteType.Text).Value = discordUserId;
-                        command.Parameters.Add("@Username", SqliteType.Text).Value = username;
-                        command.Parameters.Add("@Level", SqliteType.Integer).Value = 0;   // Default Level
-                        command.Parameters.Add("@Xp", SqliteType.Integer).Value = 0;      // Default XP
-                        command.Parameters.Add("@MaxXp", SqliteType.Integer).Value = 10;  // Default MaxXP
+                using (var command = new SqliteCommand(query, connection))
+                {
+                    command.Parameters.Add("@DiscordUserId", SqliteType.Text).Value = discordUserId;
+                    command.Parameters.Add("@Username", SqliteType.Text).Value = username;
+                    command.Parameters.Add("@Level", SqliteType.Integer).Value = 0;   // Default Level
+                    command.Parameters.Add("@Xp", SqliteType.Integer).Value = 0;      // Default XP
+                    command.Parameters.Add("@MaxXp", SqliteType.Integer).Value = 10;  // Default MaxXP
 
-                        // Execute the query to create the profile
-                        command.ExecuteNonQuery();
-                    }
-
-                    Console.WriteLine($"Profile created for user {username} ({discordUserId}).");
+                    // Execute the query to create the profile
+                    command.ExecuteNonQuery();
                 }
+
+                Console.WriteLine($"Profile created for user {username} ({discordUserId}).");
             }
             catch (Exception ex)
             {
@@ -85,24 +81,45 @@ namespace RPG_Bot.Data
             }
         }
 
+        public Profile? GetProfile(string discordUserId)
+        {
+            using var connection = new SqliteConnection($"Data Source={_databasePath}");
+            connection.Open();
+
+            string query = @"SELECT DiscordUserId, Username, Level, Xp, MaxXp FROM Profiles WHERE DiscordUserId = @DiscordUserId";
+            using var command = new SqliteCommand(query, connection);
+            command.Parameters.AddWithValue("@DiscordUserId", discordUserId);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Profile
+                {
+                    DiscordUserId = reader.GetString(0),
+                    Username = reader.GetString(1),
+                    Level = reader.GetInt32(2),
+                    Xp = reader.GetInt32(3),
+                    MaxXp = reader.GetInt32(4)
+                };
+            }
+            return null;
+        }
+    
+
         // Check if a profile already exists for the given DiscordUserId
         public bool DoesProfileExist(string discordUserId)
         {
             try
             {
-                using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
-                {
-                    connection.Open();
+                using var connection = new SqliteConnection($"Data Source={_databasePath}");
+                connection.Open();
 
-                    string checkQuery = @"SELECT COUNT(1) FROM Profiles WHERE DiscordUserId = @DiscordUserId";
-                    using (var command = new SqliteCommand(checkQuery, connection))
-                    {
-                        command.Parameters.Add("@DiscordUserId", SqliteType.Text).Value = discordUserId;
+                string checkQuery = @"SELECT COUNT(1) FROM Profiles WHERE DiscordUserId = @DiscordUserId";
+                using var command = new SqliteCommand(checkQuery, connection);
+                command.Parameters.Add("@DiscordUserId", SqliteType.Text).Value = discordUserId;
 
-                        long count = (long)command.ExecuteScalar();
-                        return count > 0; // Returns true if profile exists
-                    }
-                }
+                long count = (long)command.ExecuteScalar();
+                return count > 0; // Returns true if profile exists
             }
             catch (Exception ex)
             {
@@ -112,3 +129,4 @@ namespace RPG_Bot.Data
         }
     }
 }
+
