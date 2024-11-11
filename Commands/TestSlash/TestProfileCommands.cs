@@ -16,10 +16,23 @@ namespace RPG_Bot.Commands.TestSlash
         {
             await interactionContext.DeferAsync();
             ulong guildId = interactionContext.Guild.Id;
+            string discordUserID = interactionContext.User.Id.ToString();
+            string username = interactionContext.User.Username;
 
             var database = new Database(guildId);
+            var profilesTable = new ProfilesTable(database.DatabasePath);
+
+            if (!profilesTable.DoesProfileExist(discordUserID))
+            {
+                profilesTable.CreateProfile(discordUserID, username);
+            }
+            else
+            {
+                Console.WriteLine("Profile already exists for this user.");
+            }
 
             await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Hello World"));
+
         }
     }
 }

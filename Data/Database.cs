@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,21 +52,14 @@ namespace RPG_Bot.Data
                 }
 
                 // Connect to the SQLite database at _databasePath (SQLite will create the file if it doesn't exist)
-                using var connection = new SqliteConnection($"Data Source={_databasePath}");
-                connection.Open();
+                using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
+                {
+                    connection.Open();
+                    // The connection will automatically be closed when the 'using' block ends.
+                    Console.WriteLine($"Database file created (blank) for guild ID: {_databasePath}");
+                }
 
-                // Create the Users table if it doesn't exist
-                string createTableQuery = @"CREATE TABLE IF NOT EXISTS Users (
-                                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                        DiscordUserId TEXT NOT NULL,
-                                        Username TEXT,
-                                        Points INTEGER DEFAULT 0
-                                    );";
-
-                using var command = new SqliteCommand(createTableQuery, connection);
-                command.ExecuteNonQuery();
-
-                Console.WriteLine($"Database file created and initialized for guild ID: {_databasePath}");
+                // Connection is closed here because of the 'using' block
             }
             catch (Exception ex)
             {
@@ -73,5 +67,8 @@ namespace RPG_Bot.Data
             }
         }
 
+        public string DatabasePath => _databasePath;
+
+        public ProfilesTable Profiles => new ProfilesTable(DatabasePath);
     }
 }
