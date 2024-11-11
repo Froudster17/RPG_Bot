@@ -3,7 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
-using RPG_Bot.Commands.TestSlash;
+using RPG_Bot.Commands.Slash;
 using RPG_Bot.config;
 
 namespace RPG_Bot
@@ -45,8 +45,7 @@ namespace RPG_Bot
             Commands = Client.UseCommandsNext(commandsConfig);
             var slashCommandsConfiguration = Client.UseSlashCommands();
 
-            //Commands.RegisterCommands<TestCommands>();
-            slashCommandsConfiguration.RegisterCommands<TestProfileCommands>();
+            slashCommandsConfiguration.RegisterCommands<ProfileCommands>();
 
             await Client.ConnectAsync();
             await Task.Delay(-1);

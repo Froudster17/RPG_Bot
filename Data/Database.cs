@@ -25,17 +25,11 @@ namespace RPG_Bot.Data
 
             _databasePath = Path.Combine(basePath, guildDbFileName);
 
-            Console.WriteLine("Checking if database file exists at: " + _databasePath);
-
             // Check if the database file exists
             if (!File.Exists(_databasePath))
             {
                 Console.WriteLine("Database file does not exist, creating and initializing...");
                 InitializeDatabase();
-            }
-            else
-            {
-                Console.WriteLine($"Database file already exists for guild ID {guildID}, using existing database.");
             }
         }
 
