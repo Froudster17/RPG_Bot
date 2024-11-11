@@ -26,7 +26,11 @@ namespace RPG_Bot.Data
             { "Level", "INTEGER DEFAULT 0" },
             { "Xp", "INTEGER DEFAULT 0" },
             { "MaxXp", "INTEGER DEFAULT 10" },
-            { "Coin", "INTEGER DEFAULT 0" }
+            { "Coin", "INTEGER DEFAULT 0" },
+            { "Health", "INTEGER DEFAULT 10" },
+            { "MaxHealth", "INTEGER DEFAULT 10" },
+            { "Damage", "INTEGER DEFAULT 1" },
+            { "Defense", "INTEGER DEFAULT 0" }
         };
 
         /// <summary>
@@ -60,7 +64,12 @@ namespace RPG_Bot.Data
                         Level INTEGER DEFAULT 0,
                         Xp INTEGER DEFAULT 0,
                         MaxXp INTEGER DEFAULT 10,
-                        Coin INTEGER DEFAULT 0
+                        Coin INTEGER DEFAULT 0,
+                        Health INTEGER DEFAULT 10,
+                        MaxHealth INTEGER DEFAULT 10,
+                        Damage INTEGER DEFAULT 1,
+                        Defense INTEGER DEFAULT 0
+                    
                     );";
 
                 using (var command = new SqliteCommand(createTableQuery, connection))
@@ -124,8 +133,8 @@ namespace RPG_Bot.Data
                 using var connection = new SqliteConnection($"Data Source={_databasePath}");
                 connection.Open();
 
-                string query = @"INSERT INTO Profiles (DiscordUserId, Username, Level, Xp, MaxXp, Coin)
-                                 VALUES (@DiscordUserId, @Username, @Level, @Xp, @MaxXp, @Coin)";
+                string query = @"INSERT INTO Profiles (DiscordUserId, Username, Level, Xp, MaxXp, Coin, Health, MaxHealth, Damage, Defense)
+                                 VALUES (@DiscordUserId, @Username, @Level, @Xp, @MaxXp, @Coin, @Health, @MaxHealth, @Damage, @Defense)";
 
                 using (var command = new SqliteCommand(query, connection))
                 {
@@ -135,6 +144,10 @@ namespace RPG_Bot.Data
                     command.Parameters.AddWithValue("@Xp", 0);     // Default XP
                     command.Parameters.AddWithValue("@MaxXp", 10); // Default MaxXP
                     command.Parameters.AddWithValue("@Coin", 0);   // Default Coin
+                    command.Parameters.AddWithValue("@Health", 10);   // Default Health
+                    command.Parameters.AddWithValue("@MaxHealth", 10);   // Default Max Health
+                    command.Parameters.AddWithValue("@Damage", 1);   // Default Damage
+                    command.Parameters.AddWithValue("@Defense", 0);   // Default Defense
 
                     command.ExecuteNonQuery();
                 }
@@ -157,7 +170,7 @@ namespace RPG_Bot.Data
             using var connection = new SqliteConnection($"Data Source={_databasePath}");
             connection.Open();
 
-            string query = @"SELECT DiscordUserId, Username, Level, Xp, MaxXp, Coin FROM Profiles WHERE DiscordUserId = @DiscordUserId";
+            string query = @"SELECT DiscordUserId, Username, Level, Xp, MaxXp, Coin, Health, MaxHealth, Damage, Defense FROM Profiles WHERE DiscordUserId = @DiscordUserId";
             using var command = new SqliteCommand(query, connection);
             command.Parameters.AddWithValue("@DiscordUserId", discordUserId);
 
@@ -171,7 +184,11 @@ namespace RPG_Bot.Data
                     Level = reader.GetInt32(2),
                     Xp = reader.GetInt32(3),
                     MaxXp = reader.GetInt32(4),
-                    Coin = reader.GetInt32(5)
+                    Coin = reader.GetInt32(5),
+                    Health = reader.GetInt32(6),
+                    MaxHealth = reader.GetInt32(7),
+                    Damage = reader.GetInt32(8),
+                    Defense = reader.GetInt32(9),
                 };
             }
             return null;

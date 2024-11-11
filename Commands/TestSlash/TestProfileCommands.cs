@@ -30,16 +30,30 @@ namespace RPG_Bot.Commands.TestSlash
                 profile = profilesTable.GetProfile(discordUserID);
             }
 
+            // Create a new embed message
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"{username}'s Profile",
-                Color = DiscordColor.Azure
+                Color = DiscordColor.Azure,
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = interactionContext.User.AvatarUrl
+                },
+                Footer = new DiscordEmbedBuilder.EmbedFooter { Text = "Use /help for more commands." }
             };
 
-            embed.AddField("Username", profile.Username, true);
-            embed.AddField("Level", profile.Level.ToString(), true);
-            embed.AddField("XP", profile.Xp.ToString(), true);
+            // Adding fields to the embed with emojis/icons
+            embed.AddField("**🟦 Level**", $"{profile.Level}", true); // Level with a bar chart emoji
+            embed.AddField("**⚡ XP**", $"{profile.Xp} / {profile.MaxXp}", true); // XP with a star emoji
+            embed.AddField("**💰 Coin**", $"{profile.Coin}", true); // Coin with a money bag emoji
 
+            // Add a separator line with a description
+            embed.AddField("**Attributes**", "=================================", false);
+            embed.AddField("**❤️ Health**", $"{profile.Health} / {profile.MaxHealth}", true); // Health with heart emoji
+            embed.AddField("**⚔️ Damage**", $"{profile.Damage}", true); // Damage with explosion emoji
+            embed.AddField("**🛡️ Defense**", $"{profile.Defense}", true); // Defense with shield emoji
+
+            // Sending the embed as a response
             await interactionContext.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
     }

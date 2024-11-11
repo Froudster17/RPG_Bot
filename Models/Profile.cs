@@ -48,5 +48,30 @@ namespace RPG_Bot.Models
         /// Coins can be used to purchase items or upgrades within the RPG system.
         /// </summary>
         public int Coin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current health of the user.
+        /// This value decreases when the user takes damage in battles or events and can increase with healing.
+        /// </summary>
+        public int Health { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum health the user can have.
+        /// This defines the upper limit for <see cref="Health"/> and may increase as the user levels up or gains items.
+        /// </summary>
+        public int MaxHealth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base damage the user can inflict in combat.
+        /// This value determines the amount of damage done to opponents in battles.
+        /// </summary>
+        public int Damage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the defense level of the user.
+        /// This value reduces incoming damage in battles, increasing the user's resilience.
+        /// </summary>
+        public int Defense { get; set; }
+
     }
 }
